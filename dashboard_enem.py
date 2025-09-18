@@ -25,7 +25,7 @@ st.markdown(
 )
 
 # -------------------- Data --------------------
-df = pd.read_csv('amostra.csv', sep=';', encoding='ISO-8859-1')
+df = pd.read_csv('dados_sample.csv', sep=';', encoding='ISO-8859-1')
 
 # Criar coluna de nota média a partir das notas das provas
 component_scores = ['NU_NOTA_CN', 'NU_NOTA_CH', 'NU_NOTA_LC', 'NU_NOTA_MT', 'NU_NOTA_REDACAO']
@@ -97,6 +97,7 @@ st.header("Um Retrato do Futuro do Brasil")
 col1, col2 = st.columns(2, gap="large")
 
 # Gráfico de Gênero - Barras
+st.info("📊 **Distribuição por Gênero**: Este gráfico mostra a distribuição dos candidatos por gênero. Permite identificar se há equilíbrio entre candidatos masculinos e femininos na região selecionada.")
 df_sexo = df_filtrado['SEXO'].value_counts(dropna=False).reset_index()
 df_sexo.columns = ['SEXO', 'Quantidade']
 fig_sexo = px.bar(
@@ -115,6 +116,7 @@ col1.plotly_chart(fig_sexo, use_container_width=True)
 
 # Gráfico de Raça/Cor - Barras
 if 'TP_COR_RACA' in df_filtrado.columns:
+    st.info("🌍 **Distribuição por Cor/Raça**: Este gráfico mostra a distribuição dos candidatos por cor/raça. É importante para identificar a diversidade étnica dos participantes e possíveis desigualdades de acesso ao ensino superior.")
     df_filtrado['COR/RACA'] = df_filtrado['TP_COR_RACA'].map(mapa_cor_raca)
     df_raca = df_filtrado['COR/RACA'].value_counts(dropna=False).reset_index()
     df_raca.columns = ['COR/RACA', 'Quantidade']
@@ -188,6 +190,7 @@ if 'Q006' in df.columns:
     if df_line.empty:
         st.warning('Sem dados suficientes para calcular a mediana por faixa de renda neste filtro.')
     else:
+        st.info("📈 **Mediana da Nota Média por Renda Familiar**: Este gráfico de linha mostra a relação entre renda familiar e desempenho acadêmico. A tendência crescente indica desigualdade educacional, onde estudantes de famílias com maior renda tendem a ter melhor desempenho no ENEM.")
         fig_renda = px.line(
             df_line.sort_values('RENDA'),
             x='RENDA',
@@ -231,6 +234,7 @@ if 'Q024' in df_filtrado.columns and 'Q025' in df_filtrado.columns:
     
     # Gráfico de acesso a computadores
     with col1:
+        st.info("💻 **Acesso a Computadores**: Este gráfico mostra quantos candidatos têm acesso a computadores em casa. O acesso à tecnologia é fundamental para o aprendizado e pode impactar significativamente o desempenho acadêmico.")
         df_computador = df_filtrado['ACESSO_COMPUTADOR'].value_counts(dropna=False).reset_index()
         df_computador.columns = ['ACESSO_COMPUTADOR', 'Quantidade']
         
@@ -257,6 +261,7 @@ if 'Q024' in df_filtrado.columns and 'Q025' in df_filtrado.columns:
     
     # Gráfico de acesso à internet
     with col2:
+        st.info("🌐 **Acesso à Internet**: Este gráfico de pizza mostra a proporção de candidatos que têm acesso à internet em casa. A conectividade é essencial para pesquisa, estudos online e acesso a recursos educacionais digitais.")
         df_internet = df_filtrado['ACESSO_INTERNET'].value_counts(dropna=False).reset_index()
         df_internet.columns = ['ACESSO_INTERNET', 'Quantidade']
         
@@ -287,6 +292,7 @@ if 'Q024' in df_filtrado.columns and 'Q025' in df_filtrado.columns:
         colunas_disponiveis = [col for col in colunas_simples if col in tabela_computador_renda.columns]
         
         if colunas_disponiveis:
+            st.info("🔥 **Mapa de Calor - Acesso a Computadores por Renda**: Este mapa de calor mostra a relação entre renda familiar e acesso a computadores. Cores mais escuras indicam maior percentual de acesso, revelando como a desigualdade econômica se reflete no acesso à tecnologia.")
             tabela_simples = tabela_computador_renda[colunas_disponiveis]
             
             fig_heatmap = px.imshow(
@@ -305,6 +311,7 @@ if 'Q024' in df_filtrado.columns and 'Q025' in df_filtrado.columns:
     
     # Box plot: Nota média por acesso à internet
     if 'NOTA_MEDIA' in df_filtrado.columns:
+        st.info("📊 **Desempenho Acadêmico por Acesso à Internet**: Este gráfico de caixa (box plot) compara o desempenho acadêmico entre estudantes com e sem acesso à internet. Mostra a distribuição das notas, incluindo mediana, quartis e valores extremos, evidenciando o impacto da conectividade no aprendizado.")
         fig_digital_performance = px.box(
             df_filtrado,
             x='ACESSO_INTERNET',
@@ -346,6 +353,7 @@ st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
 # -------------------- 4. Desempenho Acadêmico --------------------
 st.header("Análise das Disciplínas: Forças e Fraquezas")
 if 'NU_NOTA_MT' in df_filtrado.columns and 'SEXO' in df_filtrado.columns:
+    st.info("📚 **Desempenho em Matemática por Gênero**: Este gráfico de caixa compara o desempenho em Matemática entre gêneros. Mostra a distribuição das notas, mediana e quartis, permitindo identificar se há diferenças significativas no desempenho entre candidatos masculinos e femininos nesta disciplina.")
     fig_mt_sexo = px.box(
         df_filtrado,
         x='SEXO', y='NU_NOTA_MT',
@@ -391,6 +399,7 @@ else:
 
     c1, c2 = st.columns([2, 1], gap="large")
     with c1:
+        st.info("📉 **Alunos Faltantes por Área**: Este gráfico mostra quantos candidatos faltaram em cada área de conhecimento do ENEM. A análise de faltas é importante para identificar padrões de abandono e áreas onde os estudantes podem ter mais dificuldades ou desinteresse.")
         fig_faltas = px.bar(
             df_faltas,
             x='Área',
@@ -414,31 +423,97 @@ st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
 
 # -------------------- 5. A Solução (Exploração) --------------------
 st.header("Faça sua Própria Análise")
-st.markdown("Use os filtros abaixo para explorar os dados e encontrar seus próprios insights.")
+st.markdown("Use os filtros abaixo para explorar os dados e encontrar seus próprios insights. Selecione 'Todos' para incluir todas as opções de uma categoria.")
 
 col1, col2, col3 = st.columns(3, gap="large")
-with col1:
-    uf_exp = st.selectbox("Estado", options=sorted(df['SG_UF_PROVA'].dropna().unique().tolist()), key="uf_exp")
-with col2:
-    renda_exp = st.selectbox("Renda", options=ordem_renda, key="renda_exp")
-with col3:
-    sexo_exp = st.selectbox("Gênero", options=sorted(df['SEXO'].dropna().unique().tolist()), key="sexo_exp")
 
+# Preparar opções para os filtros
+opcoes_uf = ['Todos'] + sorted(df['SG_UF_PROVA'].dropna().unique().tolist())
+opcoes_renda = ['Todos'] + ordem_renda
+opcoes_sexo = ['Todos'] + sorted(df['SEXO'].dropna().unique().tolist())
+
+with col1:
+    uf_exp = st.selectbox(
+        "Estado", 
+        options=opcoes_uf, 
+        index=0,
+        key="uf_exp",
+        help="Selecione 'Todos' para incluir todos os estados ou escolha um estado específico"
+    )
+with col2:
+    renda_exp = st.selectbox(
+        "Renda", 
+        options=opcoes_renda, 
+        index=0,
+        key="renda_exp",
+        help="Selecione 'Todos' para incluir todas as faixas de renda ou escolha uma faixa específica"
+    )
+with col3:
+    sexo_exp = st.selectbox(
+        "Gênero", 
+        options=opcoes_sexo, 
+        index=0,
+        key="sexo_exp",
+        help="Selecione 'Todos' para incluir ambos os gêneros ou escolha um gênero específico"
+    )
+
+# Aplicar filtros
 col_renda = 'RENDA' if 'RENDA' in df.columns else 'Q006'
-mask = (
-    (df['SG_UF_PROVA'] == uf_exp) &
-    (df[col_renda] == renda_exp) &
-    (df['SEXO'] == sexo_exp)
-)
-df_exploracao = df[mask]
+
+# Criar máscara para filtros
+if uf_exp == 'Todos':
+    mask_uf = pd.Series([True] * len(df), index=df.index)
+else:
+    mask_uf = df['SG_UF_PROVA'] == uf_exp
+
+if renda_exp == 'Todos':
+    mask_renda = pd.Series([True] * len(df), index=df.index)
+else:
+    mask_renda = df[col_renda] == renda_exp
+
+if sexo_exp == 'Todos':
+    mask_sexo = pd.Series([True] * len(df), index=df.index)
+else:
+    mask_sexo = df['SEXO'] == sexo_exp
+
+# Aplicar todas as máscaras
+df_exploracao = df[mask_uf & mask_renda & mask_sexo]
 
 if df_exploracao.empty:
     st.warning("Nenhum dado encontrado para a combinação de filtros selecionada.")
 else:
-    nota_media_filtrada = df_exploracao['NOTA_MEDIA'].mean()
-    st.metric("Nota Média para o grupo selecionado", f"{nota_media_filtrada:.2f}")
+    # Mostrar informações sobre o grupo selecionado
+    col_info1, col_info2, col_info3 = st.columns(3)
+    
+    with col_info1:
+        st.metric("Registros Selecionados", f"{len(df_exploracao):,}")
+    
+    with col_info2:
+        nota_media_filtrada = df_exploracao['NOTA_MEDIA'].mean()
+        st.metric("Nota Média", f"{nota_media_filtrada:.2f}")
+    
+    with col_info3:
+        if 'NOTA_MEDIA' in df_exploracao.columns:
+            nota_mediana = df_exploracao['NOTA_MEDIA'].median()
+            st.metric("Nota Mediana", f"{nota_mediana:.2f}")
+    
+    # Mostrar resumo dos filtros aplicados
+    st.markdown("**Filtros Aplicados:**")
+    filtros_info = []
+    if uf_exp != 'Todos':
+        filtros_info.append(f"Estado: {uf_exp}")
+    if renda_exp != 'Todos':
+        filtros_info.append(f"Renda: {renda_exp}")
+    if sexo_exp != 'Todos':
+        filtros_info.append(f"Gênero: {sexo_exp}")
+    
+    if filtros_info:
+        st.info(" | ".join(filtros_info))
+    else:
+        st.info("Todos os dados incluídos (nenhum filtro específico aplicado)")
     # Gráfico 1: Distribuição das Notas por Área de Conhecimento
     if all(col in df_exploracao.columns for col in ['NOTA_CN', 'NOTA_CH', 'NOTA_LC', 'NOTA_MT']):
+        st.info("📊 **Distribuição das Notas por Área de Conhecimento**: Este gráfico de caixa mostra a distribuição das notas em cada área de conhecimento do ENEM para o grupo selecionado. Permite comparar o desempenho entre as diferentes disciplinas e identificar quais áreas têm maior variabilidade nas notas.")
         notas_areas = {
             'Ciências da Natureza': df_exploracao['NOTA_CN'].dropna(),
             'Ciências Humanas': df_exploracao['NOTA_CH'].dropna(),
@@ -465,6 +540,7 @@ else:
 
     # Gráfico 2: Histograma da Nota Média
     if 'NOTA_MEDIA' in df_exploracao.columns:
+        st.info("📈 **Histograma da Nota Média**: Este histograma mostra a distribuição das notas médias do grupo selecionado. Permite visualizar a concentração de notas em diferentes faixas e identificar se a distribuição é normal, assimétrica ou tem outras características importantes.")
         df_exploracao['NOTA_MEDIA'] = pd.to_numeric(df_exploracao['NOTA_MEDIA'], errors='coerce')
     fig_hist = px.histogram(
         df_exploracao,
@@ -497,6 +573,7 @@ else:
         mapa_presenca = {0: 'Faltou', 1: 'Presente', 2: 'Eliminado', 3: 'Anulado'}
         presenca_counts = serie_presenca.map(mapa_presenca).value_counts(dropna=True).reset_index()
         presenca_counts.columns = ['Situação', 'Quantidade']
+        st.info("📋 **Proporção de Presença/Falta**: Este gráfico mostra a distribuição dos candidatos por situação de presença na área selecionada. Inclui presentes, faltantes, eliminados e anulados, permitindo analisar padrões de abandono e participação efetiva no exame.")
         fig_presenca = px.bar(
             presenca_counts,
             x='Situação',

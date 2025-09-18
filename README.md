@@ -42,21 +42,37 @@ Este projeto visa resolver o problema de que professores e gestores educacionais
 
 ## 📋 Pré-requisitos
 
+- Python 3.7 ou superior
+- pip (gerenciador de pacotes Python)
+
+## 🚀 Instalação e Execução
+
+### 1. Clone o repositório
 ```bash
-pip install streamlit pandas plotly matplotlib seaborn jupyter
+git clone <url-do-repositorio>
+cd pi
 ```
 
-## 🚀 Como Executar
+### 2. Instale as dependências
+```bash
+pip install -r requirements.txt
+```
 
-### 1. Dashboard Streamlit
+### 3. Execute o Dashboard Streamlit
 ```bash
 streamlit run dashboard_enem.py
 ```
+O dashboard será aberto automaticamente no seu navegador em `http://localhost:8501`
 
-### 2. Análise Exploratória
+### 4. Execute a Análise Exploratória (Opcional)
 ```bash
 jupyter notebook dados.ipynb
 ```
+
+## 📊 Dados Necessários
+
+Certifique-se de que os seguintes arquivos estão presentes no diretório do projeto:
+- `dados_sample.csv` - Dataset de amostra do ENEM (já incluído)
 
 ## 📊 Estrutura do Projeto
 
@@ -64,7 +80,9 @@ jupyter notebook dados.ipynb
 pi/
 ├── dashboard_enem.py          # Dashboard interativo principal
 ├── dados.ipynb               # Notebook de análise exploratória
-├── amostra.csv               # Dataset do ENEM (amostra)
+├── dados_sample.csv          # Dataset do ENEM (amostra)
+├── tests.py                  # Script para gerar amostra dos dados
+├── requirements.txt          # Dependências do projeto
 └── README.md                 # Este arquivo
 ```
 
